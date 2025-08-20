@@ -21,7 +21,7 @@ for (dataset in datasets_eurostat){
 
 figure1 <- prc_hicp_midx |>
   filter(unit == "I15",
-         coicop %in% c("CP071"),
+         coicop %in% c("CP0711"),
          geo %in% c("DE", "FR", "IT", "NL", "ES")) |>
   left_join(geo, by = "geo") |>
   select(geo, Geo, coicop, date, values) |>
