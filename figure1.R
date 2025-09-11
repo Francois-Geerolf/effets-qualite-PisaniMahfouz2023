@@ -17,40 +17,59 @@ for (dataset in datasets_eurostat){
   )
 }
 
-# Figure 1 ------
 
-figure1 <- prc_hicp_midx |>
-  filter(unit == "I15",
-         coicop %in% c("CP0711"),
-         geo %in% c("DE", "FR", "IT", "NL", "ES")) |>
-  left_join(geo, by = "geo") |>
-  select(geo, Geo, coicop, date, values) |>
-  filter(date >= as.Date("1996-01-01")) |>
-  arrange(date) |>
-  group_by(Geo) |>
-  mutate(values = 100*values/values[date == as.Date("1996-01-01")]) |>
-  left_join(colors, by = c("Geo" = "country"))
+## Figure 1 -------
 
-  ggplot(data = figure1) + geom_line(aes(x = date, y = values, color = color)) + 
-  theme_minimal() + xlab("") + ylab("Prix des véhicules automobiles (1996 = 100)") +
-  scale_x_date(breaks = as.Date(paste0(seq(1996, 2030, 2), "-01-01")),
-               labels = date_format("%Y")) +
-  scale_y_log10(breaks = seq(0, 200, 5)) +
-  scale_color_identity() +
-  ggimage::geom_image(data = figure1 |>
-               group_by(date) |>
-               filter(n() == 5) |>
-               arrange(values) |>
-               mutate(dist = min(values[2]-values[1],values[3]-values[2],
-                                 values[4]-values[3],values[5]-values[4])) |>
-               arrange(-dist, date) |>
-               head(5) |>
-               mutate(image = paste0("flags/", str_to_lower(gsub(" ", "-", Geo)), ".png")),
-             aes(x = date, y = values, image = image), asp = 1.5) +
-  theme(legend.position = "none") +
-  labs(caption = "Source: Eurostat, calculs de l'auteur")
+figure1_line <- prc_hicp_manr %>%
+  filter(coicop %in% c("CP00"),
+         geo == "EA") %>%
+  filter(date >= as.Date("2021-03-01"),
+         date <= as.Date("2023-04-01")) %>%
+  bind_rows(prc_hicp_ctrb %>%
+              filter(coicop %in% c("SERV", "IGD_NNRG"),
+                     geo == "EA") %>%
+              filter(date >= as.Date("2021-03-01"),
+                     date <= as.Date("2023-04-01")) %>%
+              group_by(date, unit, geo) %>%
+              summarise(values = sum(values)) %>%
+              ungroup %>%
+              mutate(coicop  = "TOT_X_NRG_FOOD")) %>%
+  mutate(Line = factor(coicop, levels = c("CP00", "TOT_X_NRG_FOOD"),
+                       labels = c("Inflation (HICP)", "Inflation excluding energy and food"))) %>%
+  select(date, Line, values)
 
 
-ggsave("figure1.png", width = 1.25*6, height = 1.25*3.375, bg = "white", dpi = 150)
-ggsave("figure1.pdf", width = 1.25*6, height = 1.25*3.375, dpi = 150)
+figure1 <- prc_hicp_ctrb %>%
+  filter(coicop %in% c("FOOD", "NRG", "IGD_NNRG", "SERV"),
+         geo == "EA") %>%
+  select(-geo, -unit) %>%
+  filter(date >= as.Date("2021-03-01"),
+         date <= as.Date("2023-04-01")) %>%
+  select(date, coicop, values)
+
+Sys.setlocale("LC_TIME", "fr_CA.UTF-8")   # keep French locale for month names if needed
+
+figure1 %>%
+  mutate(Coicop_factor = factor(coicop, levels = c("SERV", "IGD_NNRG", "FOOD", "NRG"),
+                                labels = c("Services", "Manufactured goods",
+                                           "Food", "Energy"))) %>%
+  ggplot(., aes(x = date, y = values/100)) +
+  geom_col(aes(fill = Coicop_factor), alpha = 1) +
+  geom_line(data = figure1_line, aes(linetype = Line), size = 1.2) +
+  theme_minimal() + xlab("") + ylab("Contributions to inflation in the Euro area") +
+  # c("orange", "red", "blue", "darkgreen")
+  scale_fill_manual(values = viridis(4)[1:4]) +
+  scale_x_date(breaks = "2 months",
+               expand = c(.01, 0), date_labels = "%b %Y") +
+  scale_y_continuous(breaks = 0.01*seq(-10, 30, 1),
+                     labels = percent_format(accuracy = 1)) +
+  theme(legend.position = c(0.2, 0.77),
+        legend.title = element_blank(),
+        axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
+        legend.key.size = unit(0.4, "cm"))
+
+
+write.csv(figure1, "figure1.csv")
+write.csv(figure1_line, "figure1_line.csv")
+
 

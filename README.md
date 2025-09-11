@@ -1,4 +1,4 @@
-# Effets qualité et transition écologique
+# Effets qualité, mesure de l'inflation et transition écologique
 
 Dans le rapport Pisani, Mahfouz (2023):
 
