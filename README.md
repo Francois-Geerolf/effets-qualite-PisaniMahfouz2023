@@ -8,8 +8,13 @@ Le rapport Pisani, Mahfouz (2023):
 
 - Pisani-Ferry J., S. Mahfouz, 2023, « Les implications économiques de l’action climatique », novembre 2023, France stratégie. [[pdf](https://www.strategie-plan.gouv.fr/files/files/Publications/Rapport/2023-incidences-economiques-rapport-pisani-5juin.pdf)]
 
-## Figure 1: Véhicules automobiles
+## Figure 1: Véhicules automobiles (1996-)
 
 [Code R](figure1.R)
 
 ![Graphique 1](figure1.png)
+
+
+## Figure 1: Véhicules automobiles (2019-)
+
+![Graphique 1b](figure1b.png)
