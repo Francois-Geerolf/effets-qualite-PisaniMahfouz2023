@@ -22,7 +22,6 @@ Le rapport Pisani, Mahfouz (2023):
 
 ![Graphique 1b](figure1b.png)
 
-
 ## Figure 1n: Véhicules automobiles neufs
 
 ### 2019-
@@ -44,7 +43,5 @@ Le rapport Pisani, Mahfouz (2023):
 [Code R](figure2b.R)
 
 ![Graphique 2b](figure2b.png)
-
-
 
 
