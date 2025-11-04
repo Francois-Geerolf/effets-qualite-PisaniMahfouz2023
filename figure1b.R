@@ -21,7 +21,7 @@ for (dataset in datasets_eurostat){
 
 figure1 <- prc_hicp_midx |>
   filter(unit == "I15",
-         coicop %in% c("CP071"),
+         coicop %in% c("CP0711"),
          geo %in% c("DE", "FR", "IT", "NL", "ES")) |>
   left_join(geo, by = "geo") |>
   select(geo, Geo, coicop, date, values) |>
@@ -32,7 +32,7 @@ figure1 <- prc_hicp_midx |>
   left_join(colors, by = c("Geo" = "country"))
 
 ggplot(data = figure1) + geom_line(aes(x = date, y = values, color = color)) + 
-  theme_minimal() + xlab("") + ylab("Prix des véhicules automobiles (2019 = 100)") +
+  theme_minimal() + xlab("") + ylab("Prix des véhicules automobiles - CP0711 (2019 = 100)") +
   scale_x_date(breaks = as.Date(paste0(seq(2019, 2100, 1), "-01-01")),
                labels = date_format("%Y")) +
   scale_y_log10(breaks = seq(0, 200, 5)) +

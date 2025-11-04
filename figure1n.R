@@ -21,18 +21,18 @@ for (dataset in datasets_eurostat){
 
 figure1 <- prc_hicp_midx |>
   filter(unit == "I15",
-         coicop %in% c("CP0711"),
+         coicop %in% c("CP07111"),
          geo %in% c("DE", "FR", "IT", "NL", "ES")) |>
   left_join(geo, by = "geo") |>
   select(geo, Geo, coicop, date, values) |>
   filter(date >= as.Date("1996-01-01")) |>
   arrange(date) |>
   group_by(Geo) |>
-  mutate(values = 100*values/values[date == as.Date("1996-01-01")]) |>
+  mutate(values = 100*values/values[1]) |>
   left_join(colors, by = c("Geo" = "country"))
 
 ggplot(data = figure1) + geom_line(aes(x = date, y = values, color = color)) + 
-  theme_minimal() + xlab("") + ylab("Prix des véhicules automobiles - CP0711 (1996 = 100)") +
+  theme_minimal() + xlab("") + ylab("Prix des véhicules automobiles neufs - CP07111 (1996 = 100)") +
   scale_x_date(breaks = as.Date(paste0(seq(1996, 2100, 2), "-01-01")),
                labels = date_format("%Y")) +
   scale_y_log10(breaks = seq(0, 200, 5)) +
@@ -51,7 +51,7 @@ ggplot(data = figure1) + geom_line(aes(x = date, y = values, color = color)) +
   labs(caption = "Source: Eurostat, calculs de l'auteur")
 
 
-ggsave("figure1.png", width = 1.25*6, height = 1.25*3.375, bg = "white", dpi = 150)
-ggsave("figure1.pdf", width = 1.25*6, height = 1.25*3.375, dpi = 150)
+ggsave("figure1n.png", width = 1.25*6, height = 1.25*3.375, bg = "white", dpi = 150)
+ggsave("figure1n.pdf", width = 1.25*6, height = 1.25*3.375, dpi = 150)
 
 

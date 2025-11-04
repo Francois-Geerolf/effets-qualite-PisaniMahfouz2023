@@ -22,6 +22,15 @@ Le rapport Pisani, Mahfouz (2023):
 
 ![Graphique 1b](figure1b.png)
 
+
+## Figure 1n: Véhicules automobiles neufs
+
+### 2019-
+
+[Code R](figure1nb.R)
+
+![Graphique 1nb](figure1nb.png)
+
 ## Figure 2: Biens industriels hors énergie — uniquement les biens durables
 
 ### 1996-
