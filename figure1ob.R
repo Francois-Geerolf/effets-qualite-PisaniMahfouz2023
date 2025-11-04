@@ -19,11 +19,11 @@ if (!(datasets_eurostat %in% ls())){
   }
 }
 
-# Figure 2 ------
+# Figure 1 ------
 
-figure2 <- prc_hicp_midx |>
+figure1 <- prc_hicp_midx |>
   filter(unit == "I15",
-         coicop %in% c("IGD_NNRG_D"),
+         coicop %in% c("CP07112"),
          geo %in% c("DE", "FR", "IT", "NL", "ES")) |>
   left_join(geo, by = "geo") |>
   select(geo, Geo, coicop, date, values) |>
@@ -33,13 +33,13 @@ figure2 <- prc_hicp_midx |>
   mutate(values = 100*values/values[date == as.Date("2019-01-01")]) |>
   left_join(colors, by = c("Geo" = "country"))
 
-ggplot(data = figure2) + geom_line(aes(x = date, y = values, color = color)) + 
-  theme_minimal() + xlab("") + ylab("Biens industriels hors énergie\nuniquement les biens durables\nIndice Janv. 2019 = 100") +
-  scale_x_date(breaks = as.Date(paste0(seq(1996, 2100, 1), "-01-01")),
+ggplot(data = figure1) + geom_line(aes(x = date, y = values, color = color)) + 
+  theme_minimal() + xlab("") + ylab("Prix des véhicules automobiles occasion - CP07112\nIndice Janv. 2019 = 100") +
+  scale_x_date(breaks = as.Date(paste0(seq(2019, 2100, 1), "-01-01")),
                labels = date_format("%Y")) +
   scale_y_log10(breaks = seq(0, 200, 5)) +
   scale_color_identity() +
-  ggimage::geom_image(data = figure2 |>
+  ggimage::geom_image(data = figure1 |>
                         group_by(date) |>
                         filter(n() == 5) |>
                         arrange(values) |>
@@ -53,7 +53,7 @@ ggplot(data = figure2) + geom_line(aes(x = date, y = values, color = color)) +
   labs(caption = "Source: Eurostat, calculs de l'auteur")
 
 
-ggsave("figure2b.png", width = 1.25*6, height = 1.25*3.375, bg = "white", dpi = 150)
-ggsave("figure2b.pdf", width = 1.25*6, height = 1.25*3.375, dpi = 150)
+ggsave("figure1ob.png", width = 1.25*6, height = 1.25*3.375, bg = "white", dpi = 150)
+ggsave("figure1ob.pdf", width = 1.25*6, height = 1.25*3.375, dpi = 150)
 
 

@@ -6,15 +6,17 @@ library(scales)
 load("colors.RData")
 load("geo.RData")
 
-## Load Eurostat datasets ------
+## Load Eurostat datasets if not already loaded ------
 
 datasets_eurostat <- c("prc_hicp_midx")
 
-for (dataset in datasets_eurostat){
-  assign(dataset, 
-         get_eurostat(dataset, stringsAsFactors = F, cache = F) |>
-           rename(date = TIME_PERIOD)
-  )
+if (!(datasets_eurostat %in% ls())){
+  for (dataset in datasets_eurostat){
+    assign(dataset, 
+           get_eurostat(dataset, stringsAsFactors = F, cache = F) |>
+             rename(date = TIME_PERIOD)
+    )
+  }
 }
 
 # Figure 1 ------
@@ -32,7 +34,7 @@ figure1 <- prc_hicp_midx |>
   left_join(colors, by = c("Geo" = "country"))
 
 ggplot(data = figure1) + geom_line(aes(x = date, y = values, color = color)) + 
-  theme_minimal() + xlab("") + ylab("Prix des véhicules automobiles neufs - CP07111 (2019 = 100)") +
+  theme_minimal() + xlab("") + ylab("Prix des véhicules automobiles neufs - CP07111\nIndice Janv. 2019 = 100") +
   scale_x_date(breaks = as.Date(paste0(seq(2019, 2100, 1), "-01-01")),
                labels = date_format("%Y")) +
   scale_y_log10(breaks = seq(0, 200, 5)) +
